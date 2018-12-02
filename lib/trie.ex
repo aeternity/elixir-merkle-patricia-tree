@@ -97,7 +97,8 @@ defmodule MerklePatriciaTree.Trie do
       {:branch, branches} ->
         # branch node
         case Enum.at(branches, nibble) do
-          [] -> nil
+          # KEN: Why not detect <<>> here?  empty branch is constructed with <<>> in builder
+          [] -> nil 
           node_hash -> node_hash |> into(trie) |> do_get(rest)
         end
 
@@ -125,7 +126,7 @@ defmodule MerklePatriciaTree.Trie do
     # Only branch nodes can have values for a nil lookup
     case Node.decode_trie(trie) do
       {:branch, branches} -> List.last(branches)
-      {:leaf, [], v} -> v
+      {:leaf, [], v} -> v # KEN: violate to the comment above?
       _ -> nil
     end
   end

@@ -109,6 +109,8 @@ defmodule MerklePatriciaTree.Trie.Builder do
     first =
       case old_prefix do
         [h | []] ->
+          # old_value is pointing to a branch node.
+          # The result is a branch node containing another branch node.
           {h, {:encoded, old_value}}
 
         [h | t] ->

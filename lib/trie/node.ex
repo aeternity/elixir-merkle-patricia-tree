@@ -55,9 +55,11 @@ defmodule MerklePatriciaTree.Trie.Node do
   def decode_node(branches, trie) when length(branches) == 17 do
     {:branch,
      Enum.reduce(branches, [], fn
+      # KEN: Why not use <<>> (Builder.@empty_branch) to represent?  It's more consistent.  
        "", acc ->
          acc ++ [""]
 
+      # KEN: Why not use `when is_list(elem)` to be more consistent.
        [_, _] = elem, acc ->
          acc ++ [elem]
 
@@ -87,8 +89,17 @@ defmodule MerklePatriciaTree.Trie.Node do
       {:leaf, prefix, v}
     else
       if is_binary(v) and byte_size(v) == 32 do
-        {:ok, rlp} = DB.get(trie.db, v)
-        {:ext, prefix, ExRLP.decode(rlp)}
+        # Assuming it's stored :ext node here, but v can be encoded branch value too
+        case DB.get(trie.db, v) do
+          {:ok, rlp} -> {:ext, prefix, ExRLP.decode(rlp)}
+          :not_found -> 
+            try do
+              {:ext, prefix, ExRLP.decode(v)}
+            rescue
+              _ ->
+                :not_found
+            end
+        end
       else
         {:ext, prefix, v}
       end
