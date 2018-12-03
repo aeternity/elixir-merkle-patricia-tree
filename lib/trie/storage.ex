@@ -96,7 +96,7 @@ defmodule MerklePatriciaTree.Trie.Storage do
       # In put_node(rlp, trie) and when byte_size(encoded) < @max_rlp_len,
       # it's directly returning encoded value
       encoded when byte_size(encoded) < @max_rlp_len ->
-        encoded
+        ExRLP.decode(encoded)
       h ->
         # stored in db
         case DB.get(trie.db, h) do

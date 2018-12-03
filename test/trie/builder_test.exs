@@ -72,11 +72,9 @@ defmodule MerklePatriciaTree.BuilderTest do
 
     [node_prefix_tl, node_value] = Trie.into(value_hash, two_leaf_trie)
       |> Storage.get_node()
-      |> ExRLP.decode()
 
     [node2_prefix_tl, node2_value] = Trie.into(value2_hash, two_leaf_trie)
       |> Storage.get_node()
-      |> ExRLP.decode()
 
     { hexprefix_tl1, true } = HexPrefix.decode(node_prefix_tl)
     { hexprefix_tl2, true } = HexPrefix.decode(node2_prefix_tl)
@@ -323,7 +321,7 @@ defmodule MerklePatriciaTree.BuilderTest do
     two_leaf_trie = node
       |> store_node(one_leaf_trie)
 
-    # Update prepared ext node with 1-nibble longer key
+    # Update prepared ext node with 3-nibble longer key
     longer_key = [1, 2, 5, 6, 7]
     value3 = "value3"
     updated_ext_node = Node.decode_trie(two_leaf_trie)
