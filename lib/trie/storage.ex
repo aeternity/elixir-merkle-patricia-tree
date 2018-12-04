@@ -93,7 +93,10 @@ defmodule MerklePatriciaTree.Trie.Storage do
       # node was stored directly
       x when not is_binary(x) ->
         x
-
+      # In put_node(rlp, trie) and when byte_size(encoded) < @max_rlp_len,
+      # it's directly returning encoded value
+      encoded when byte_size(encoded) < @max_rlp_len ->
+        ExRLP.decode(encoded)
       h ->
         # stored in db
         case DB.get(trie.db, h) do

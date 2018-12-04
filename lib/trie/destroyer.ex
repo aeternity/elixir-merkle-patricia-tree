@@ -40,7 +40,7 @@ defmodule MerklePatriciaTree.Trie.Destroyer do
   defp trie_remove_key({:ext, ext_prefix, node_hash}, key_prefix, trie) do
     {_matching_prefix, ext_tl, remaining_tl} = ListHelper.overlap(ext_prefix, key_prefix)
 
-    unless length(ext_tl) == 0 do
+    unless Enum.empty?(ext_tl) do
       # Prefix doesn't match ext, do nothing.
       {:ext, ext_prefix, node_hash}
     else
