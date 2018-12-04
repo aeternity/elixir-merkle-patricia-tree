@@ -85,27 +85,15 @@ defmodule MerklePatriciaTree.Trie.Builder do
       {:ext, matching_prefix, new_encoded_trie}
     else
       # TODO: Handle when we need to add an extension after this
-      # TODO: Standardize with below
-      first =
-        case old_tl do
-          # [] -> {16, {:encoded, old_value}} # TODO: Is this right?
-          [h | []] ->
-            {h, {:encoded, old_value}}
+      branches = trie_put_key({:ext, old_tl, old_value}, new_tl, new_value, trie)
+        |> Node.encode_node(trie)
 
-          [h | t] ->
-            ext_encoded = {:ext, t, old_value} |> Node.encode_node(trie)
-
-            {h, {:encoded, ext_encoded}}
-        end
-
-      branches = build_branch([first, {new_tl, new_value}], trie) |> Node.encode_node(trie)
       {:ext, matching_prefix, branches}
     end
   end
 
   # Merge into a ext with no matches (i.e. create a branch)
   defp trie_put_key({:ext, old_prefix, old_value}, new_prefix, new_value, trie) do
-    # TODO: Standardize with above
     first =
       case old_prefix do
         [h | []] ->
